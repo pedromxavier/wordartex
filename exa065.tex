@@ -1,0 +1,34 @@
+\documentclass[pstricks,convert]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{mathptmx}
+\usepackage{pst-plot}
+\usepackage{pst-text}
+\usepackage{indentfirst}
+\usepackage{pstricks-add}
+
+\newdimen\MyDim \MyDim=30pt
+\makeatletter
+\def\doPerChar#1#2\@nil{%
+	\CharacterAction{#1}%
+	\ifx\relax#2\relax\else\doPerChar#2\@nil\fi}
+\def\perChar#1{\doPerChar#1\@nil}
+\def\CharacterAction#1{%
+  \fontsize{\MyDim}{1.1\MyDim}\selectfont#1%
+  \global\advance\MyDim by -0.175pt}
+\makeatother
+
+\pagestyle{empty}
+\begin{document}
+
+\begin{pspicture}(0,-1)(8,2)\DeclareFixedFont{\bigsf}{T1}{phv}{b}{n}{1.5cm}\pscharpath[
+linecolor=Yellow,%
+fillstyle=gradient,%
+gradbegin=Yellow,%
+gradend=Red,%
+gradmidpoint=1,%
+gradangle=5]%
+{\bigsf PSTricks}
+\end{pspicture}
+\end{document}
+
