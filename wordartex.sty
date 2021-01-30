@@ -3,11 +3,149 @@
 %%
 %% Todo: Implement every Layout in Word 1997 - 2003 WordArt Pack.
 
+\usepackage{float}
 
 %% Ensure utf-8 support
-\usepackage[utf8]{inputenc}
+%% \usepackage[utf8]{inputenc}
+
+%% Conditionals
+\usepackage{ifthen}
+\usepackage{ifthenx}
+\usepackage{contour}
+\usepackage{pdfrender}
+\usepackage{helvet}
+
+%% Colors
+%\usepackage{xcolor}
 
 %% PSTRICKS
-\usepackage{pst-all}
-\usepackage{pst-light3d}
+\usepackage{tikz}
+\usetikzlibrary{shadings}
+\usetikzlibrary{fadings}
+\usetikzlibrary{decorations, decorations.text}
 
+%% Switch/case environment
+\newcommand{\ifequals}[3]{%%
+	\ifthenelse{\equal{#1}{#2}}{#3}{}
+}
+\newcommand{\case}[2]{#1 #2}
+
+\newenvironment{switch}[1]{%%
+	\renewcommand{\case}{\ifequals{#1}}
+}{}
+
+%% Variable
+\def\@wordartexsize{20pt}
+
+%% Transformations
+\newsavebox{\shear}
+\newcommand{\shearbox}[2][.5]
+  {%
+    \mbox
+      {%
+        \sbox{\shear}{#2}%
+        \hskip\wd\shear
+        \pdfsave
+        \pdfsetmatrix{1 0 #1 1}%
+        \llap{\usebox{\shear}}%
+        \pdfrestore
+      }%
+  }
+%% Interface
+
+\newcommand{\wordartest}{
+    \artex{1}{WordArt}\par
+    \artex{2}{WordArt}\par
+    \artex{3}{WordArt}\par
+    \artex{4}{WordArt}\par
+    \artex{16}{WordArt}\par
+}
+
+\newcommand{\artex}[3][1]{%%
+    \begin{switch}{#2}
+        \case{1}{
+            \artexi{#3}
+        }
+        \case{2}{
+            \artexii{#3}
+        }
+        \case{3}{
+            \artexiii{#3}
+        }
+        \case{4}{
+            \artexiv{#3}
+        }
+        \case{16}{
+            \artexxvi{#3}
+        }
+    \end{switch}
+}
+
+%% template (1, 1)
+\newcommand{\artexi}[1]{
+    WordArt\#1
+    \scalebox{1}[1.2]{
+    \sffamily\bfseries\fontsize{\@wordartexsize}{1.2\@wordartexsize}\selectfont%%
+    \textpdfrender{
+          TextRenderingMode=FillStrokeClip,
+          LineWidth=1.5pt,
+          FillColor=white,
+          StrokeColor=black,
+          MiterLimit=1
+        }{#1}
+    }
+}
+
+%% template (1, 2)
+\newcommand{\artexii}[1]{
+    WordArt\#2
+    \scalebox{0.85}[1]{\rotatebox[origin=c]{15}{%%
+    \shearbox[.4]{%%
+        \sffamily\bfseries\fontsize{\@wordartexsize}{1.2\@wordartexsize}\selectfont%%
+        \textpdfrender{
+            TextRenderingMode=FillStrokeClip,
+            LineWidth=1.5pt,
+            FillColor=black,
+            StrokeColor=black,
+            MiterLimit=1
+        }{#1}
+        }
+    }}
+}
+
+%% template (1, 3)
+\newcommand{\artexiii}[1]{
+    WordArt\#3
+    \sffamily\bfseries\fontsize{\@wordartexsize}{1.2\@wordartexsize}\selectfont%%
+    \textpdfrender{
+        TextRenderingMode=FillStrokeClip,
+        LineWidth=1.5pt,
+        FillColor=black,
+        StrokeColor=black,
+        MiterLimit=1
+    }{#1}
+}
+
+\newcommand{\artexiv}[1]{
+    WordArt\#4
+}
+
+\newcommand\fadingtext[3][]{%
+  \begin{tikzfadingfrompicture}[name=fading letter]
+    \node[text=transparent!0,inner xsep=0pt,outer xsep=0pt,#1] {#3};
+  \end{tikzfadingfrompicture}%
+  \begin{tikzpicture}[baseline=(textnode.base)]
+    \node[inner sep=0pt,outer sep=0pt,#1](textnode){\phantom{#3}}; 
+    \shade[path fading=fading letter,#2,fit fading=false]
+    (textnode.south west) rectangle (textnode.north east);% 
+  \end{tikzpicture}% 
+}
+
+\newcommand{\artexxvi}[1]{
+    WordArt\#5
+    \sffamily\bfseries\fontsize{\@wordartexsize}{1.2\@wordartexsize}\selectfont%%
+    \noindent\fadingtext{shading=color wheel, shading angle=90}{\parbox[b]{\linewidth}{#1}}
+}
+
+  
+  
